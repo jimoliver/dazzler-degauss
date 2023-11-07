@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "dazzler-degauss"
+version = "0.1.0"
+description = ""
+authors = ["joliver <36411970+jimoliver@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest = "^7.4.3"
+commitizen = "^3.12.0"
+boto3 = "^1.28.79"
+
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
