@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'degausses the schedule after restart.'
+Resources:
+  aliasForLambda:
+    Type: 'AWS::Lambda::Alias'
+    Properties:
+      FunctionVersion: $LATEST
+      FunctionName: !Ref lambda
+      Name: !Ref Environment
+  lambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub 'dazzler-degauss-${Environment}'
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          CHANNEL_SIDS: !Ref ChannelSidList 
+      InlineCode: >-
+        def lambda_handler(event, context):
+          print('Checking {} at {}...'.format(SITE, event['time']))
+      Description: 'degausses the schedule after restart.'
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+Parameters:
+  Environment:
+    Type: String
+    Default: test
+    AllowedValues:
+      - live
+      - test
+  LambdaTimeout:
+    Default: 360
+    Type: Number
+    Description: >-
+      The function execution time (in seconds) after which Lambda terminates the
+      function.
+  LambdaMemorySize:
+    Default: 128
+    Type: Number
+    Description: 'The amount of memory, in MB, that is allocated to your Lambda function.'
+  ChannelSidList:
+    Type: String
+Mappings:
+  OperationsMap:
+    PipsApiUrlMap:
+      test: https://api.test.bbc.co.uk/pips/api/v1
+      live: https://api.live.bbc.co.uk/pips/api/v1
